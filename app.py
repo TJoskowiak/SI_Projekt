@@ -1,13 +1,17 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import tkinter
+import tkinter.messagebox as msgBox
 
 
 def draw_graph():
+    if stringGraph.get() == "":
+        msgBox.showerror("Empty input", "Please enter the adjacency lists for the graph.\n"
+                                        "Use the following format: [x1,x2];[y1];[]")
+        return
     adjacency_list = parse(stringGraph.get())
-
     graph_to_draw = nx.Graph()
-
+    graph_to_draw.add_nodes_from(range(stringGraph.get().count(';')+1))
     graph_to_draw.add_edges_from(adjacency_list)
     nx.draw_networkx(graph_to_draw, node_size=800)
     plt.show()
