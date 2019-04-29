@@ -5,18 +5,29 @@ import tkinter.messagebox as msgBox
 
 
 def drawgraph():
-    G = nx.Graph()
+    adjacency_list = parse(stringGraph.get())
 
-    G.add_edges_from([(1, 2),
-                      (2, 3),
-                      (3, 4),
-                      (4, 1),
-                      (4, 5),
-                      (5, 6),
-                      (6, 2)])
-    colors = [1, 2, 1, 1, 1, 1]
-    nx.draw(G, node_color=colors, node_size=800)
+    graph_to_draw = nx.Graph()
+
+    graph_to_draw.add_edges_from(adjacency_list)
+    nx.draw(graph_to_draw, node_size=800)
     plt.show()
+
+## Parse the entry string to list of edges for the graph
+def parse(string_to_parse):
+    ##print(string_to_parse)
+    ## Parse the string into list of lists of edges
+    edge_list = string_to_parse.split(';')
+    edge_list = [x.replace('[', '').replace(']', '').split(',') for x in edge_list]
+    edge_list = [[(edge_list.index(row), int(x, 10)) for x in row if x != ''] for row in edge_list]
+    ##print(edge_list)
+
+    ## Create one big list of edges
+    edge_list_final = []
+    for row in edge_list:
+        edge_list_final.extend(row)
+    print(edge_list_final)
+    return edge_list_final
 
 
 if __name__ == "__main__":
@@ -28,6 +39,7 @@ if __name__ == "__main__":
     WindowMain = tkinter.Tk("DrawGraph")
     WindowMain.geometry("500x100")
     WindowMain.resizable(0, 0)
+    WindowMain.title("Draw Graph")
 
 
     ## Variables used in the GUI
