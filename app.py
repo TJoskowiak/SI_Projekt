@@ -2,6 +2,28 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import tkinter
 import tkinter.messagebox as msgBox
+import cnf_file
+
+
+def count_colours():
+    if stringGraph.get() == "":
+        msgBox.showerror("Empty input", "Please enter the adjacency lists for the graph.\n"
+                                        "Use the following format: [x1,x2];[y1];[]")
+        return
+    # variables for CNF file
+    node_number = stringGraph.get().count(';')+1
+    adjacency_list = parse(stringGraph.get())
+    colour_searching = True
+    counter = 1
+
+    # Creating the CNF file and searching for minimal valid number of colours
+    if node_number > 1:
+        while colour_searching:
+            cnf_file.create_cnf_file(node_number=node_number, adjacency_list=adjacency_list, colour_number=counter)
+            return
+
+    # Returning a message box with result
+    msgBox.showinfo("Colour search result", "You can colour this graph with " + str(counter) + " colours used")
 
 
 def draw_graph():
@@ -9,9 +31,13 @@ def draw_graph():
         msgBox.showerror("Empty input", "Please enter the adjacency lists for the graph.\n"
                                         "Use the following format: [x1,x2];[y1];[]")
         return
+    # variables for graph colouring
+    node_number = stringGraph.get().count(';')+1
     adjacency_list = parse(stringGraph.get())
+
+    # draw graph
     graph_to_draw = nx.Graph()
-    graph_to_draw.add_nodes_from(range(stringGraph.get().count(';')+1))
+    graph_to_draw.add_nodes_from(range(node_number))
     graph_to_draw.add_edges_from(adjacency_list)
     nx.draw_networkx(graph_to_draw, node_size=800)
     plt.show()
@@ -58,10 +84,12 @@ if __name__ == "__main__":
     LabelGraphInput = tkinter.Label(FrameBackground, textvariable=stringGraphLabel, )
     EntryGraphInput = tkinter.Entry(FrameBackground, width=100, textvariable=stringGraph)
     ButtonDrawGraph = tkinter.Button(FrameBackground, text="Draw Graph", command=lambda: draw_graph())
+    ButtonGetColours = tkinter.Button(FrameBackground, text="Number of colours", command=lambda: count_colours())
 
     # Packing the elements
     FrameBackground.pack(fill=tkinter.BOTH, expand=True)
     ButtonDrawGraph.pack(side=tkinter.BOTTOM)
+    ButtonGetColours.pack(side=tkinter.BOTTOM)
     LabelGraphInput.pack(side=tkinter.LEFT)
     EntryGraphInput.pack(side=tkinter.RIGHT)
 
